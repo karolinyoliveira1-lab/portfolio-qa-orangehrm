@@ -154,6 +154,6 @@ Os casos completos estão nas planilhas da pasta [`test-cases-manual`](./test-ca
 
 ## Autoria
 
-Desenvolvido por **Karoliny Carvalho**, Analista de QA Júnior, com foco em testes manuais e funcionais, documentação de casos de teste e identificação de defeitos.
+Desenvolvido por **Karoliny Carvalho**, QA Júnior, com foco em testes manuais e funcionais, documentação de casos de teste e identificação de defeitos.
 
 [LinkedIn](https://www.linkedin.com/in/karoliny-p-o-carvalho-10554b113/)
