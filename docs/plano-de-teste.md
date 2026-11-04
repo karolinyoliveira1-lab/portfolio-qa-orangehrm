@@ -9,7 +9,7 @@
 | **Módulos testados** | Login e PIM (Personnel Information Management) |
 | **Tipo de teste** | Funcional, manual, caixa-preta |
 | **Responsável** | Karoliny Carvalho |
-| **Navegador e versão** | Google Chrome |
+| **Navegador** | Google Chrome |
 | **Sistema operacional** | Windows 11 |
 | **Período de execução** | 10/2026 |
 
@@ -20,7 +20,7 @@
 Validar o comportamento dos módulos de Login e PIM do OrangeHRM, verificando:
 
 - se o sistema permite o acesso com credenciais válidas e trata corretamente dados inválidos ou ausentes;
-- se o cadastro de funcionários aplica as validações de campos obrigatórios, duplicidade e regras de negócio esperadas.
+- se o cadastro de funcionários aplica as validações de campos obrigatórios, duplicidade e geração de identificadores esperadas.
 
 ---
 
@@ -42,13 +42,12 @@ Validar o comportamento dos módulos de Login e PIM do OrangeHRM, verificando:
 **PIM (cadastro de funcionários)**
 
 - Cadastro de funcionário com dados válidos
-- Validação de First Name obrigatório
-- Validação de Last Name obrigatório
+- Validação de First Name e Last Name obrigatórios
 - Alteração do Employee ID
-- Cancelamento do cadastro
-- Validação de Username duplicado
-- Validação de senha e confirmação de senha
+- Cadastro sem Middle Name (campo opcional)
 - Validação de Employee ID duplicado
+- Validação de Username e Password obrigatórios
+- Validação de Username duplicado
 - Geração automática de Employee ID
 
 ### Fora do escopo
@@ -65,11 +64,14 @@ Validar o comportamento dos módulos de Login e PIM do OrangeHRM, verificando:
 
 Os testes foram executados manualmente, com cenários positivos e negativos. As técnicas aplicadas foram:
 
+- Testes funcionais
 - Testes positivos e negativos
 - Validação de campos obrigatórios
-- Testes de valores duplicados
-- Análise de resultado esperado x resultado obtido
-- Registro e documentação de defeitos
+- Validação de dados duplicados
+- Validação de mensagens de erro
+- Comparação entre resultado esperado e resultado obtido
+- Reexecução de cenários para confirmação de comportamento
+- Identificação e documentação de defeitos
 
 ---
 
@@ -95,26 +97,24 @@ Os testes foram executados manualmente, com cenários positivos e negativos. As 
 | CT-PIM-02 | Validação de First Name obrigatório |
 | CT-PIM-03 | Validação de Last Name obrigatório |
 | CT-PIM-04 | Alteração do Employee ID |
-| CT-PIM-05 | Cancelamento do cadastro |
-| CT-PIM-06 | Validação de Username duplicado |
-| CT-PIM-07 | Validação de senha e confirmação de senha |
-| CT-PIM-08 | Validação de Employee ID duplicado |
-| CT-PIM-09 | Geração automática de Employee ID |
+| CT-PIM-05 | Cadastro sem Middle Name |
+| CT-PIM-06 | Validação de Employee ID duplicado |
+| CT-PIM-07 | Validação de Username obrigatório |
+| CT-PIM-08 | Validação de Password obrigatório |
+| CT-PIM-09 | Validação de Username duplicado |
+| CT-PIM-10 | Geração automática de Employee ID |
 
-Os casos detalhados, com pré-condições, passos, dados de entrada e resultado esperado, estão em [`test-cases-manual`](../test-cases-manual):
+Os casos detalhados, com pré-condições, passos, dados de teste, resultado esperado e resultado obtido, estão em [`test-cases-manual`](../test-cases-manual):
 
 - [Login-test-cases.xlsx](../test-cases-manual/Login-test-cases.xlsx)
-- [PIM-test-cases.xlsx](../test-cases-manual/PIM-test-cases.xlsx)
+- [PIM-test-cases.xlsx](../test-cases-manual/PIM-test-cases.xlsx) (casos de teste e Bug Report)
 
 ---
 
 ## 6. Dados de Teste
 
-- **Credenciais válidas:** usuário `Admin` e senha `admin123`
-- **Senha inválida:** `admin1`
-- **Usuário inválido:** `Administrator`
-- **Campos vazios:** usuário e/ou senha sem preenchimento
-- **PIM:** dados de funcionário válidos, inválidos e duplicados, conforme as planilhas de casos de teste
+- **Login:** credenciais válidas (usuário `Admin` e senha `admin123`), senha inválida (`admin1`), usuário inválido (`Administrator`) e campos vazios
+- **PIM:** dados fictícios de funcionário, Employee ID existente (`9999`), username existente (`Admin`) e username de teste (`loginteste01`)
 
 Os dados têm finalidade exclusivamente de demonstração e estudo.
 
@@ -138,17 +138,9 @@ Os dados têm finalidade exclusivamente de demonstração e estudo.
 
 ## 9. Registro de Defeitos
 
-Os defeitos identificados são documentados com:
+Os defeitos são documentados com ID, módulo, caso de teste de origem, severidade, prioridade, passos para reproduzir, resultado esperado, resultado obtido, reprodutibilidade e evidência.
 
-- ID do defeito
-- Módulo e funcionalidade
-- Severidade e prioridade
-- Passos para reproduzir
-- Resultado esperado e resultado obtido
-- Reprodutibilidade
-- Evidência (print ou vídeo)
-
-O detalhamento completo está no [README](../README.md) do repositório.
+O detalhamento está no [README](../README.md) e na aba **Bug Report** da planilha [PIM-test-cases.xlsx](../test-cases-manual/PIM-test-cases.xlsx).
 
 ---
 
@@ -157,22 +149,41 @@ O detalhamento completo está no [README](../README.md) do repositório.
 | Módulo | Executados | Aprovados | Reprovados |
 |---|---:|---:|---:|
 | Login | 7 | 7 | 0 |
-| PIM | 9 | 8 | 1 |
-| **Total** | **16** | **15** | **1** |
+| PIM | 10 | 9 | 1 |
+| **Total** | **17** | **16** | **1** |
 
-**Defeito identificado:** BUG-PIM-001, geração automática de Employee ID já existente (módulo PIM).
+**Defeito identificado:** BUG-PIM-001, sistema gera automaticamente Employee ID já existente (caso de origem: CT-PIM-10).
 
 ---
 
 ## 11. Evidências
 
-| Evidência | Arquivo |
+### Login
+
+| ID | Evidência |
 |---|---|
-| Login com senha inválida | [01-Login-com-senha-invalida.mp4](../evidences/videos/01-Login-com-senha-invalida.mp4) |
-| Login com usuário inválido | [02-Login-com-usuario-invalido.mp4](../evidences/videos/02-Login-com-usuario-invalido.mp4) |
-| Login com usuário e senha inválidos | [03-Login-com-usuario-e-Senha-invalidos.mp4](../evidences/videos/03-Login-com-usuario-e-Senha-invalidos.mp4) |
-| CT-PIM-02: First Name vazio | [CT-PIM-02-First-Name-vazio.mp4](../evidences/videos/CT-PIM-02-First-Name-vazio.mp4) |
-| BUG-PIM-001 | [BUG-PIM-001-anexo5.png](../evidences/prints/BUG-PIM-001-anexo5.png) |
+| CT-LOGIN-01 | [01-Login-com-senha-invalida.mp4](../evidences/videos/01-Login-com-senha-invalida.mp4) |
+| CT-LOGIN-02 | [02-Login-com-usuario-invalido.mp4](../evidences/videos/02-Login-com-usuario-invalido.mp4) |
+| CT-LOGIN-03 | [03-Login-com-usuario-e-Senha-invalidos.mp4](../evidences/videos/03-Login-com-usuario-e-Senha-invalidos.mp4) |
+| CT-LOGIN-04 | [04-Login-com-usuario-e-senha-validos.mp4](../evidences/videos/04-Login-com-usuario-e-senha-validos.mp4) |
+| CT-LOGIN-05 | [05-Campos-vazios.mp4](../evidences/videos/05-Campos-vazios.mp4) |
+| CT-LOGIN-06 | [06-Usuario-vazio.mp4](../evidences/videos/06-Usuario-vazio.mp4) |
+| CT-LOGIN-07 | [07-Senha-vazia.mp4](../evidences/videos/07-Senha-vazia.mp4) |
+
+### PIM
+
+| ID | Evidência |
+|---|---|
+| CT-PIM-01 | [CT-PIM-01-Cadastro-valido.mp4](../evidences/videos/CT-PIM-01-Cadastro-valido.mp4) |
+| CT-PIM-02 | [CT-PIM-02-First-Name-vazio.mp4](../evidences/videos/CT-PIM-02-First-Name-vazio.mp4) |
+| CT-PIM-03 | [CT-PIM-03-Last-Name-vazio.png](../evidences/prints/CT-PIM-03-Last-Name-vazio.png) |
+| CT-PIM-04 | [CT-PIM-04-Editar-Employee-ID.png](../evidences/prints/CT-PIM-04-Editar-Employee-ID.png) |
+| CT-PIM-05 | [CT-PIM-05-Cadastro-sem-Middle-Name.mp4](../evidences/videos/CT-PIM-05-Cadastro-sem-Middle-Name.mp4) |
+| CT-PIM-06 | [vídeo](../evidences/videos/CT-PIM-06-Employee-ID-duplicado.mp4) · [print](../evidences/prints/CT-PIM-06-Employee-ID-duplicado.png) |
+| CT-PIM-07 | [CT-PIM-07-Username-obrigatorio.png](../evidences/prints/CT-PIM-07-Username-obrigatorio.png) |
+| CT-PIM-08 | [CT-PIM-08-Password-obrigatorio.png](../evidences/prints/CT-PIM-08-Password-obrigatorio.png) |
+| CT-PIM-09 | [CT-PIM-09-Username-duplicado.png](../evidences/prints/CT-PIM-09-Username-duplicado.png) |
+| CT-PIM-10 | [BUG-PIM-001-anexo5.png](../evidences/prints/BUG-PIM-001-anexo5.png) |
 
 ---
 
