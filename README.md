@@ -7,8 +7,8 @@ O trabalho abrange elaboração de casos de teste, execução dos cenários, an�
 ## Resumo
 
 | Casos executados | Aprovados | Reprovados | Defeitos registrados |
-|---:|---:|---:|---:|
-| 16 | 15 | 1 | 1 |
+|-----------------:|----------:|-----------:|---------------------:|
+| 17 | 16 | 1 | 1 |
 
 ---
 
@@ -22,7 +22,7 @@ Acesso: https://opensource-demo.orangehrmlive.com/
 
 | Item | Detalhe |
 |---|---|
-| Navegador e versão | Google Chrome|
+| Navegador | Google Chrome |
 | Sistema operacional | Windows 11 |
 | Período de execução | 10/2026 |
 | Tipo de teste | Manual, funcional, caixa-preta |
@@ -43,7 +43,7 @@ Acesso: https://opensource-demo.orangehrmlive.com/
 | CT-LOGIN-06 | Usuário vazio |
 | CT-LOGIN-07 | Senha vazia |
 
-### PIM: Personnel Information Management (9 casos)
+### PIM: Personnel Information Management (10 casos)
 
 | ID | Cenário |
 |---|---|
@@ -51,11 +51,12 @@ Acesso: https://opensource-demo.orangehrmlive.com/
 | CT-PIM-02 | Validação de First Name obrigatório |
 | CT-PIM-03 | Validação de Last Name obrigatório |
 | CT-PIM-04 | Alteração do Employee ID |
-| CT-PIM-05 | Cancelamento do cadastro |
-| CT-PIM-06 | Validação de Username duplicado |
-| CT-PIM-07 | Validação de senha e confirmação de senha |
-| CT-PIM-08 | Validação de Employee ID duplicado |
-| CT-PIM-09 | Geração automática de Employee ID |
+| CT-PIM-05 | Cadastro sem Middle Name |
+| CT-PIM-06 | Validação de Employee ID duplicado |
+| CT-PIM-07 | Validação de Username obrigatório |
+| CT-PIM-08 | Validação de Password obrigatório |
+| CT-PIM-09 | Validação de Username duplicado |
+| CT-PIM-10 | Geração automática de Employee ID |
 
 ---
 
@@ -64,8 +65,8 @@ Acesso: https://opensource-demo.orangehrmlive.com/
 | Módulo | Casos Executados | Aprovados | Reprovados |
 |---|---:|---:|---:|
 | Login | 7 | 7 | 0 |
-| PIM | 9 | 8 | 1 |
-| **Total** | **16** | **15** | **1** |
+| PIM | 10 | 9 | 1 |
+| **Total** | **17** | **16** | **1** |
 
 ---
 
@@ -76,33 +77,37 @@ Os casos completos estão nas planilhas da pasta [`test-cases-manual`](./test-ca
 | ID | Título | Pré-condição | Passos | Dados de entrada | Resultado esperado |
 |:--|:--|:--|:--|:--|:--|
 | **CT-LOGIN-01** | Login com senha inválida | Usuário cadastrado no sistema | 1. Acessar a tela de Login<br>2. Informar usuário válido<br>3. Informar senha inválida<br>4. Clicar em "Login" | **Usuário:** Admin<br>**Senha:** admin1 (inválida) | Usuário permanece na tela de Login, a autenticação não é realizada e a mensagem `Invalid credentials` é exibida. |
-| **CT-LOGIN-05** | Campos vazios | Usuário cadastrado no sistema | 1. Acessar a tela de Login<br>2. Deixar usuário e senha em branco<br>3. Clicar em "Login" | **Usuário:** (vazio)<br>**Senha:** (vazio) | Usuário permanece na tela de Login e a mensagem `Required` é exibida abaixo de ambos os campos. |
+| **CT-PIM-06** | Validação de Employee ID duplicado | Usuário autenticado; existir funcionário com o Employee ID usado no teste | 1. Abrir Add Employee<br>2. Preencher campos obrigatórios<br>3. Informar ID existente<br>4. Tentar salvar | **Employee ID existente:** 9999 | Cadastro bloqueado e mensagem informando que o Employee ID já existe. |
 
 ---
 
 ## Defeito Identificado
 
-### BUG-PIM-001: Geração automática de Employee ID já existente
+### BUG-PIM-001: Sistema gera automaticamente Employee ID já existente
 
 | Campo | Descrição |
 |---|---|
 | **Módulo** | PIM > Add Employee |
+| **Caso de teste de origem** | CT-PIM-10 |
 | **Severidade** | Média |
 | **Prioridade** | Média |
-| **Reprodutibilidade** | Reproduzido em mais de uma tentativa (comportamento intermitente) |
+| **Reprodutibilidade** | Reproduzido em múltiplas tentativas |
 | **Evidência** | [BUG-PIM-001-anexo5.png](./evidences/prints/BUG-PIM-001-anexo5.png) |
+
+**Pré-condição:** usuário autenticado e acesso à tela Add Employee.
 
 **Passos para reproduzir**
 
-1. Acessar o OrangeHRM Demo e fazer login.
-2. Acessar o menu **PIM** e clicar em **Add Employee**.
-3. Preencher **First Name** e **Last Name** com dados válidos.
-4. Manter o campo **Employee ID** com o valor gerado automaticamente.
-5. Clicar em **Save**.
+1. Acessar **PIM > Add Employee**.
+2. Observar o Employee ID preenchido automaticamente.
+3. Repetir o acesso ao formulário em novas tentativas.
+4. Verificar se o ID gerado já pertence a outro funcionário.
 
-**Resultado esperado:** o sistema gera automaticamente um Employee ID único e disponível, e o cadastro é concluído.
+**Resultado esperado:** o sistema gera automaticamente um Employee ID único e disponível.
 
-**Resultado obtido:** em algumas execuções, o sistema gerou um Employee ID que já estava cadastrado e exibiu a mensagem `Employee Id already exists`.
+**Resultado obtido:** em múltiplas tentativas, o sistema gerou IDs já existentes (por exemplo, 0445 e 0374) e exibiu `Employee Id already exists`. Em outra tentativa, o ID 0380 foi aceito.
+
+**Observação:** a validação de duplicidade funciona, mas a geração automática do ID apresenta comportamento inconsistente.
 
 ![BUG-PIM-001: Employee Id already exists](./evidences/prints/BUG-PIM-001-anexo5.png)
 
@@ -123,13 +128,32 @@ Os casos completos estão nas planilhas da pasta [`test-cases-manual`](./test-ca
 
 ## Evidências
 
-| Evidência | Arquivo |
+### Login (vídeos)
+
+| ID | Evidência |
 |---|---|
-| Login com senha inválida | [01-Login-com-senha-invalida.mp4](./evidences/videos/01-Login-com-senha-invalida.mp4) |
-| Login com usuário inválido | [02-Login-com-usuario-invalido.mp4](./evidences/videos/02-Login-com-usuario-invalido.mp4) |
-| Login com usuário e senha inválidos | [03-Login-com-usuario-e-Senha-invalidos.mp4](./evidences/videos/03-Login-com-usuario-e-Senha-invalidos.mp4) |
-| CT-PIM-02: First Name vazio | [CT-PIM-02-First-Name-vazio.mp4](./evidences/videos/CT-PIM-02-First-Name-vazio.mp4) |
-| BUG-PIM-001 | [BUG-PIM-001-anexo5.png](./evidences/prints/BUG-PIM-001-anexo5.png) |
+| CT-LOGIN-01 | [01-Login-com-senha-invalida.mp4](./evidences/videos/01-Login-com-senha-invalida.mp4) |
+| CT-LOGIN-02 | [02-Login-com-usuario-invalido.mp4](./evidences/videos/02-Login-com-usuario-invalido.mp4) |
+| CT-LOGIN-03 | [03-Login-com-usuario-e-Senha-invalidos.mp4](./evidences/videos/03-Login-com-usuario-e-Senha-invalidos.mp4) |
+| CT-LOGIN-04 | [04-Login-com-usuario-e-senha-validos.mp4](./evidences/videos/04-Login-com-usuario-e-senha-validos.mp4) |
+| CT-LOGIN-05 | [05-Campos-vazios.mp4](./evidences/videos/05-Campos-vazios.mp4) |
+| CT-LOGIN-06 | [06-Usuario-vazio.mp4](./evidences/videos/06-Usuario-vazio.mp4) |
+| CT-LOGIN-07 | [07-Senha-vazia.mp4](./evidences/videos/07-Senha-vazia.mp4) |
+
+### PIM (vídeos e prints)
+
+| ID | Evidência |
+|---|---|
+| CT-PIM-01 | [CT-PIM-01-Cadastro-valido.mp4](./evidences/videos/CT-PIM-01-Cadastro-valido.mp4) |
+| CT-PIM-02 | [CT-PIM-02-First-Name-vazio.mp4](./evidences/videos/CT-PIM-02-First-Name-vazio.mp4) |
+| CT-PIM-03 | [CT-PIM-03-Last-Name-vazio.png](./evidences/prints/CT-PIM-03-Last-Name-vazio.png) |
+| CT-PIM-04 | [CT-PIM-04-Editar-Employee-ID.png](./evidences/prints/CT-PIM-04-Editar-Employee-ID.png) |
+| CT-PIM-05 | [CT-PIM-05-Cadastro-sem-Middle-Name.mp4](./evidences/videos/CT-PIM-05-Cadastro-sem-Middle-Name.mp4) |
+| CT-PIM-06 | [vídeo](./evidences/videos/CT-PIM-06-Employee-ID-duplicado.mp4) · [print](./evidences/prints/CT-PIM-06-Employee-ID-duplicado.png) |
+| CT-PIM-07 | [CT-PIM-07-Username-obrigatorio.png](./evidences/prints/CT-PIM-07-Username-obrigatorio.png) |
+| CT-PIM-08 | [CT-PIM-08-Password-obrigatorio.png](./evidences/prints/CT-PIM-08-Password-obrigatorio.png) |
+| CT-PIM-09 | [CT-PIM-09-Username-duplicado.png](./evidences/prints/CT-PIM-09-Username-duplicado.png) |
+| CT-PIM-10 | [BUG-PIM-001-anexo5.png](./evidences/prints/BUG-PIM-001-anexo5.png) |
 
 ---
 
@@ -139,7 +163,7 @@ Os casos completos estão nas planilhas da pasta [`test-cases-manual`](./test-ca
 |---|---|
 | Plano de teste | [docs/plano-de-teste.md](./docs/plano-de-teste.md) |
 | Casos de teste (Login) | [test-cases-manual/Login-test-cases.xlsx](./test-cases-manual/Login-test-cases.xlsx) |
-| Casos de teste (PIM) | [test-cases-manual/PIM-test-cases.xlsx](./test-cases-manual/PIM-test-cases.xlsx) |
+| Casos de teste e Bug Report (PIM) | [test-cases-manual/PIM-test-cases.xlsx](./test-cases-manual/PIM-test-cases.xlsx) |
 | Evidências em vídeo | [evidences/videos](./evidences/videos) |
 | Evidências em imagem | [evidences/prints](./evidences/prints) |
 
@@ -147,8 +171,8 @@ Os casos completos estão nas planilhas da pasta [`test-cases-manual`](./test-ca
 
 ## Próximos Passos
 
-- [ ] Automação dos principais cenários com Cypress e JavaScript
-- [ ] Geração de relatórios de execução automatizada
+- Automação dos principais cenários com Cypress e JavaScript
+- Geração de relatórios de execução automatizada
 
 ---
 
